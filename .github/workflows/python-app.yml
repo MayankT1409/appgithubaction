@@ -1,0 +1,44 @@
+## Basically, this workflow will run Python unit tests whenever there is a push or pull request to the main branch. It checks out the code, sets up Python, installs dependencies from a requirements file, and then runs the tests using unittest.
+name: Python Unit Tests
+
+## this on is for the Event that will trigger the workflow. In this case, it will trigger on push and pull request events to the main branch.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+
+## Job is for the actual work that will be done when the workflow is triggered. In this case, it will run on the latest version of Ubuntu and perform several steps to check out the code, set up Python, install dependencies, and run tests.
+
+jobs:
+  test:
+    ## Running Containerized Environment
+    runs-on: ubuntu-latest
+
+    steps:
+        ## Cheking out the code from the repositoty using the checkout action. This allows the workflow to access the code in the repository and run tests on it.
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+
+        ## Setting up Python enviroment using the setup-python action. It specifies that it wants to use Python 3.x.
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    ## Installing dependencies using pip. It first upgrades pip to the latest version and then installs the dependencies listed in the requirement.txt file.
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirement.txt
+
+
+    ## Run tests using the unittest module. It discovers and runs all the tests in the tests directory.
+    - name: Run tests
+      run: pytest
+
+
